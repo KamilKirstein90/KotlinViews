@@ -1,0 +1,80 @@
+
+- use Databinding to bind the sharedView Model to every fragment
+    1) go the the layout of the fragment and set the layout to <data>
+    </data>
+    2) create a viewModel variable in the <variable></variable> scope
+    3) pass in the fragment the content of the sharedViewModel to the binding?.apply{
+        viewModel = sharedViewModel
+    }
+    // in the apply labmda one can acces the member of the binding object without adressing it before
+
+    4) assign with bining expressions the member of the viewModel to the single views of the fragment layout
+    5) it is possible to assign a labda with binding expression to the onClickListener of a view
+        like : <Button>
+        android:id = "@id/btn1"
+        ...
+
+        android:setOnClickListener = "@{() -> viewModel.setFlavor(@string/salted_caramel)}"
+
+    Update pickup and summary fragment to use view model
+        
+    6) in the Second Fragment we will create a List of three dates started from the curent date and always ascending one day 
+
+    private fun getPickupOptions(): List<String> {
+    val options = mutableListOf<String>()
+    val formatter = SimpleDateFormat("E MMM d", Locale.getDefault())
+    val calendar = Calendar.getInstance()
+    // Create a list of dates starting with the current date and the following 3 dates
+    repeat(4) {
+        options.add(formatter.format(calendar.time)) // add the current date formated to the given format in the SimpleDateFormat
+        calendar.add(Calendar.DATE, 1) // go to the next date 
+    }
+    return options
+    }
+
+    val dateOptions = getPickupOptions()
+
+    then we need a val date : String  // that represent the current date 
+
+    7) in the layout bind the lable to the radio button 
+
+    Radio button option0 represents dateOptions[0] in viewModel (today)
+
+    Radio button option1 represents dateOptions[1] in viewModel (tomorrow)
+
+    Radio button option2 represents dateOptions[2] in viewModel (the day after tomorrow)
+
+    Radio button option3 represents dateOptions[3] in viewModel (two days after tomorrow)
+
+    Radiobutn have in the layout three attributes that are set throu the bindig.viewModel 
+     text = "@{viewModel.dateOptions[0].toString()}"
+     checked = "@{viewModel.date.equeals(dateOptions[0])}}
+     onClickListener = "@{()-> viewModel.setDate(dateOptions[0])}"
+
+
+    assaing this attributes for every RadioButton
+
+    8) clearData() / resetOrder() in viewModel.init{}
+
+    fun resetOrder() {
+   _quantity.value = 0
+   _flavor.value = ""
+   _date.value = dateOptions[0]
+   _price.value = 0.0
+    }
+
+    cal resetOrder() in init{}
+
+    9) use databinding and listener binding to bind the onClickbutton listeners of the start fragment with databinding and use lamdas in the layout
+    so create another variable in the layout but this time for the buttons in the fragment so a fragment variable
+
+    10) bind in the fragment binding?.fragment = this for the fragment and in the .apply{}
+    lambda like :
+
+    binding?.apply{
+        fragment = this@FragmentName // here the this would be referring to the binding object so we havet so specify it explicitly to the fragment the binding?.apply{} is currently called
+    }
+
+    
+
+
